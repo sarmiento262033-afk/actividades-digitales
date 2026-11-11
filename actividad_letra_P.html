@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La aventura de la letra P</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#fff1f7,#eaf5ff);color:#26324a}
+main{max-width:900px;margin:24px auto;padding:22px}.panel{background:white;border-radius:24px;padding:24px;box-shadow:0 8px 25px #53627a22}
+h1{text-align:center;color:#873c91;margin:8px 0}p{text-align:center;font-size:18px}
+.top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-weight:bold;color:#555}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:14px;margin:22px 0}
+button{border:0;border-radius:18px;padding:16px;background:#f4e6ff;font-size:20px;font-weight:bold;cursor:pointer;color:#48305d;min-height:110px}
+button:hover{transform:translateY(-2px);background:#ead4ff}button:focus{outline:4px solid #f5c94e}
+.emoji{display:block;font-size:42px;margin-bottom:8px}.actions{text-align:center}
+#feedback{font-size:20px;font-weight:bold;min-height:32px;color:#28734b}
+.action{background:#8b4a9c;color:white;min-height:auto;padding:13px 24px;margin:8px}
+.small{font-size:14px;color:#666}
+</style></head>
+<body><main><section class="panel">
+<div class="top"><span>🌟 Actividad interactiva</span><span id="progress">Pregunta 1 de 6</span></div>
+<h1>¡La aventura de la letra P!</h1>
+<p>Observa los dibujos y toca la palabra que comienza con la letra <b>P</b>.</p>
+<div id="question" style="text-align:center;font-size:24px;font-weight:bold;color:#713b83">¿Cuál empieza por P?</div>
+<div class="grid" id="choices"></div>
+<div id="feedback" role="status" aria-live="polite"></div>
+<div class="actions"><button class="action" id="next" onclick="nextQuestion()" disabled>Siguiente ➜</button><button class="action" onclick="restart()">Volver a empezar ↻</button></div>
+<p class="small">Consejo: pronuncia el nombre del dibujo en voz alta antes de elegir.</p>
+</section></main>
+<script>
+const qs=[
+ {items:[["🍎","MANZANA",false],["🐟","PESCADO",true],["☀️","SOL",false]]},
+ {items:[["🐶","PERRO",true],["🌙","LUNA",false],["🏠","CASA",false]]},
+ {items:[["🌸","FLOR",false],["🍐","PERA",true],["🚗","CARRO",false]]},
+ {items:[["✏️","LÁPIZ",false],["🦋","MARIPOSA",false],["🦆","PATO",true]]},
+ {items:[["🍌","BANANO",false],["🦁","LEÓN",false],["⚽","PELOTA",true]]},
+ {items:[["👑","CORONA",false],["🦃","PAVO",true],["🍇","UVAS",false]]}
+];
+let index=0,score=0,answered=false;
+function render(){answered=false;document.getElementById('progress').textContent=`Pregunta ${index+1} de ${qs.length}`;document.getElementById('feedback').textContent='';document.getElementById('next').disabled=true;
+let box=document.getElementById('choices');box.innerHTML='';
+qs[index].items.forEach(([emoji,word,correct])=>{let b=document.createElement('button');b.innerHTML=`<span class="emoji">${emoji}</span>${word}`;b.onclick=()=>choose(b,correct);box.appendChild(b);});}
+function choose(btn,correct){if(answered)return;answered=true;document.querySelectorAll('#choices button').forEach(b=>b.disabled=true);
+if(correct){score++;btn.style.background='#d9f7e5';document.getElementById('feedback').textContent='¡Muy bien! 🎉 Esa palabra empieza por P.';}
+else{btn.style.background='#ffe0e0';document.getElementById('feedback').textContent='¡Buen intento! Busca la palabra que comienza con P. 💜';}
+document.getElementById('next').disabled=false;document.getElementById('next').textContent=index===qs.length-1?'Ver resultado':'Siguiente ➜';}
+function nextQuestion(){if(!answered)return;if(index<qs.length-1){index++;render()}else{document.getElementById('choices').innerHTML='';document.getElementById('question').textContent=`¡Terminaste! Lograste ${score} de ${qs.length} respuestas correctas.`;document.getElementById('feedback').textContent=score>=4?'¡Excelente trabajo! 🌟':'¡Sigue practicando, cada intento te ayuda a aprender!';document.getElementById('next').disabled=true;document.getElementById('progress').textContent='Actividad finalizada';}}
+function restart(){index=0;score=0;document.getElementById('question').textContent='¿Cuál empieza por P?';document.getElementById('next').textContent='Siguiente ➜';render()}
+render();
+</script></body></html>

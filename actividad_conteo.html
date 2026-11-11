@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contemos juntos</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#e8fff6,#fff6df);color:#26324a}
+main{max-width:900px;margin:24px auto;padding:22px}.panel{background:white;border-radius:24px;padding:24px;box-shadow:0 8px 25px #53627a22}
+h1{text-align:center;color:#187b69;margin:8px 0}p{text-align:center;font-size:18px}
+.top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-weight:bold;color:#555}
+.number{text-align:center;font-size:68px;color:#187b69;font-weight:bold;margin:10px}
+.objects{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;min-height:130px;font-size:54px;padding:12px;background:#f2fff9;border-radius:18px}
+.options{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin:22px}
+button{border:0;border-radius:18px;padding:16px 28px;background:#dff5ed;font-size:26px;font-weight:bold;cursor:pointer;color:#175b50;min-width:80px}
+button:hover{background:#c5eddf}button:focus{outline:4px solid #f5c94e}
+#feedback{text-align:center;font-size:20px;font-weight:bold;min-height:32px;color:#28734b}
+.actions{text-align:center} .action{background:#187b69;color:white;font-size:17px;min-width:auto;padding:13px 24px;margin:8px}
+.small{font-size:14px;color:#666}
+</style></head>
+<body><main><section class="panel">
+<div class="top"><span>🧮 Juego de matemáticas</span><span id="progress">Reto 1 de 6</span></div>
+<h1>¡Contemos juntos!</h1>
+<p>Cuenta los dibujos con atención y selecciona el número correcto.</p>
+<div class="number" id="number">¿Cuántos hay?</div>
+<div class="objects" id="objects" aria-label="Objetos para contar"></div>
+<div class="options" id="options"></div>
+<div id="feedback" role="status" aria-live="polite"></div>
+<div class="actions"><button class="action" id="next" onclick="next()" disabled>Siguiente ➜</button><button class="action" onclick="restart()">Volver a empezar ↻</button></div>
+<p class="small">Puedes señalar cada dibujo mientras cuentas en voz alta.</p>
+</section></main>
+<script>
+const rounds=[
+ {emoji:'🍎',count:3,choices:[2,3,4]},
+ {emoji:'⭐',count:5,choices:[4,5,6]},
+ {emoji:'🐠',count:2,choices:[1,2,3]},
+ {emoji:'🌼',count:6,choices:[5,6,7]},
+ {emoji:'🎈',count:4,choices:[3,4,5]},
+ {emoji:'🦋',count:7,choices:[6,7,8]}
+];
+let i=0,score=0,answered=false;
+function render(){answered=false;let r=rounds[i];document.getElementById('progress').textContent=`Reto ${i+1} de ${rounds.length}`;document.getElementById('number').textContent='¿Cuántos hay?';document.getElementById('objects').textContent=Array(r.count).fill(r.emoji).join(' ');document.getElementById('feedback').textContent='';document.getElementById('next').disabled=true;document.getElementById('next').textContent='Siguiente ➜';let o=document.getElementById('options');o.innerHTML='';r.choices.forEach(n=>{let b=document.createElement('button');b.textContent=n;b.onclick=()=>choose(b,n===r.count);o.appendChild(b);});}
+function choose(btn,ok){if(answered)return;answered=true;document.querySelectorAll('#options button').forEach(b=>b.disabled=true);if(ok){score++;btn.style.background='#c9f4d9';document.getElementById('feedback').textContent='¡Correcto! ¡Contaste muy bien! 🎉';}else{btn.style.background='#ffe0e0';document.getElementById('feedback').textContent='¡Casi! Vuelve a contar señalando cada dibujo. 💚';}document.getElementById('next').disabled=false;document.getElementById('next').textContent=i===rounds.length-1?'Ver resultado':'Siguiente ➜';}
+function next(){if(!answered)return;if(i<rounds.length-1){i++;render();}else{document.getElementById('objects').textContent='🏆';document.getElementById('options').innerHTML='';document.getElementById('number').textContent=`${score} de ${rounds.length}`;document.getElementById('feedback').textContent=score>=5?'¡Felicitaciones! Eres un gran contador. 🌟':'¡Buen trabajo! Sigue practicando los números.';document.getElementById('progress').textContent='Actividad finalizada';document.getElementById('next').disabled=true;}}
+function restart(){i=0;score=0;render()}render();
+</script></body></html>
